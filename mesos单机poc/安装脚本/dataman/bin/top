@@ -1,0 +1,8 @@
+curl -v -X POST http://127.0.0.1:8080/v2/apps -H Content-Type:application/json -d \
+'{
+          "id": "dataman-top-test",
+          "cmd": "top -b",
+          "cpus": 0.1,
+          "mem": 16.0,
+          "instances": 1
+}'

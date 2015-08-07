@@ -1,0 +1,13 @@
+#!/bin/bash
+#Filename:
+#****************************************************
+# Author: zpang - zpang@dataman-inc.com
+# Last modified: 2015-05-17 15:24
+# Description: single mesos system conf
+#****************************************************
+DATETIME=`date +%Y%m%d-%H:%M:%S`
+DIR=$(dirname `readlink -f "$0"`) && cd $DIR && cd ../Docker_nginx
+Nweb=$(docker images | grep ubuntu-nginx-base | grep -v grep | wc -l)
+if [ "$Nweb" -eq 0 ];then
+        docker build -t  ubuntu-nginx-base .
+fi

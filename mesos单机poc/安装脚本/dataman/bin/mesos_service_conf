@@ -1,0 +1,105 @@
+#!/bin/bash
+#Filename:
+#****************************************************
+# Author: zpang - zpang@dataman-inc.com
+# Last modified: 2015-05-17 15:24
+# Description: single mesos system conf
+#****************************************************
+DATETIME=`date +%Y%m%d-%H:%M:%S`
+DIR=$(dirname `readlink -f "$0"`) && cd $DIR
+IP=$(ifconfig eth0| awk -F"[ :]+" 'NR==2{print}'|awk '{print $2}'|awk -F ':' '{print $2}')
+
+HostFile()
+{
+    HOSTNAME=$(cat /etc/hostname)
+    X=$(grep $IP /etc/hosts | wc -l)
+    if [ $X -eq 0 ];then
+	echo "$IP  $HOSTNAME" >> /etc/hosts
+    fi
+}
+
+RootTest()
+{
+    ROOT_UID=0
+    UID=$(id -u)
+    if [ "$UID" -ne "$ROOT_UID" ];then
+        printf "permission denied..Please use root! \n" &&  exit 1
+    fi
+}
+
+Mesos_Master_Conf()
+{
+    MESOS_MASTER_CONF_DIR="/etc/mesos-master"
+    echo "dataman_single_mesos" > $MESOS_MASTER_CONF_DIR/cluster
+    echo "$IP" > $MESOS_MASTER_CONF_DIR/hostname
+    echo "0.0.0.0" > $MESOS_MASTER_CONF_DIR/ip
+    echo "1" > $MESOS_MASTER_CONF_DIR/quorum
+    echo "/var/lib/mesos" > $MESOS_MASTER_CONF_DIR/work_dir
+}
+
+Mesos_Slave_Conf()
+{
+    MESOS_SLAVE_CONF_DIR="/etc/mesos-slave"
+    echo "$IP" > $MESOS_SLAVE_CONF_DIR/hostname
+    echo "docker,mesos" > $MESOS_SLAVE_CONF_DIR/containerizers
+    echo "0.0.0.0" > $MESOS_SLAVE_CONF_DIR/ip
+    echo "5mins" > $MESOS_SLAVE_CONF_DIR/executor_registration_timeout
+    echo "cgroups/cpu,cgroups/mem" > $MESOS_SLAVE_CONF_DIR/isolation
+    sudo /bin/rm -f /tmp/mesos/meta/slaves/latest
+}
+
+Marathon_Conf()
+{
+    MARATHON_CONF_DIR="/etc/marathon/conf"
+    echo "zk://127.0.0.1:2181/marathon" > $MARATHON_CONF_DIR/zk
+    echo "http_callback" > $MARATHON_CONF_DIR/event_subscriber
+    echo "127.0.0.1" > $MARATHON_CONF_DIR/hostname
+    echo "zk://127.0.0.1:2181/mesos" > $MARATHON_CONF_DIR/master
+}
+
+Bamboo_Conf()
+{
+    BAMBOO="/opt/bamboo/config"
+    BAMBOO_FLIE="../bamboo"
+    if [ ! -f /etc/init.d/bamboo ];then
+	sudo /bin/cp $BAMBOO_FLIE/bamboo /etc/init.d/bamboo && sudo /bin/chmod 755 /etc/init.d/bamboo
+    fi
+    if [ ! -f $BAMBOO/haproxy_template.cfg.bak ];then
+	sudo /bin/cat $BAMBOO/haproxy_template.cfg > $BAMBOO/haproxy_template.cfg.bak
+    fi
+    sudo /bin/cat $BAMBOO_FLIE/haproxy_template.cfg > $BAMBOO/haproxy_template.cfg
+    sudo /bin/cat > $BAMBOO/production.json<<EOF
+{
+  "Marathon": {
+    "Endpoint": "http://127.0.0.1:8080"
+  },
+
+  "Bamboo": {
+    "Endpoint": "http://127.0.0.1:8000",
+    "Zookeeper": {
+      "Host": "127.0.0.1:2181",
+      "Path": "/marathon-haproxy/state",
+      "ReportingDelay": 5
+    }
+  },
+
+  "HAProxy": {
+    "TemplatePath": "/opt/bamboo/config/haproxy_template.cfg",
+    "OutputPath": "/etc/haproxy/haproxy.cfg",
+    "ReloadCommand": "PIDS=\`pidof haproxy\`; haproxy -f /etc/haproxy/haproxy.cfg -p /var/run/haproxy.pid -sf \$PIDS && while ps -p \$PIDS; do sleep 0.2; done"
+  },
+
+  "StatsD": {
+    "Enabled": false,
+    "Host": "0.0.0.0:8125",
+    "Prefix": "bamboo-server.development."
+  }
+}
+EOF
+}
+
+Main()
+{
+    RootTest && HostFile && Mesos_Master_Conf && Mesos_Slave_Conf && Marathon_Conf && Bamboo_Conf && service mesos-master restart && service mesos-slave restart && service marathon restart && service bamboo restart echo "mesos setting conf is ok"
+}
+Main

@@ -1,0 +1,26 @@
+curl -v -X POST http://127.0.0.1:8080/v2/apps -H Content-Type:application/json -d \
+'{
+          "id": "dataman-nginx-test",
+          "cmd": "nginx",
+          "cpus": 0.1,
+          "mem": 128.0,
+          "instances": 5,
+          "container": {
+                         "type": "DOCKER",
+                         "docker": {
+                                         "image": "ubuntu-nginx-base",
+                                         "network": "BRIDGE",
+                                         "portMappings": [
+                                                           { "containerPort": 80, "hostPort": 0, "servicePort": 10000, "protocol": "tcp" }
+                                                         ]
+                                    }
+                       },
+          "healthChecks": [
+			    { "protocol": "HTTP",
+                              "portIndex": 0,
+                              "path": "/",
+                              "gracePeriodSeconds": 5,
+                              "intervalSeconds": 20,
+                              "maxConsecutiveFailures": 3 }
+                          ]
+}'

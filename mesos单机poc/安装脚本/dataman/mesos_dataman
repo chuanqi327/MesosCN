@@ -1,0 +1,74 @@
+#!/bin/bash
+#Filename:
+#****************************************************
+# Author: zpang - zpang@dataman-inc.com
+# Last modified: 2015-07-02 15:24
+# Description: mesos system operation script 
+#****************************************************
+DATETIME=`date +%Y%m%d-%H:%M:%S`
+DIR=$(dirname `readlink -f "$0"`) && cd $DIR
+all()
+{
+service zookeeper $1 && service mesos-master $1 && service mesos-slave $1 && service marathon $1 && service haproxy $1 && service bamboo $1 
+}
+
+install()
+{
+/bin/sh  bin/mesos_service_install All && /bin/sh bin/mesos_service_conf
+}
+
+addtop()
+{
+/bin/sh  bin/top
+}
+
+addweb()
+{
+/bin/sh bin/build_docker && /bin/sh  bin/webapp
+}
+case $1 in
+	start)
+	all $1
+	;;
+
+	stop)
+	all $1
+	;;
+
+      status)
+	all $1
+	;;
+
+      restart)
+	all $1
+	;;
+
+     install)
+	$1
+	;;
+
+      addtop)
+	$1
+	;;
+  
+      addweb)
+	$1
+	;;
+       
+
+   --help|-h)
+                echo "mesos system operation script"
+                echo "Usage: mesos_dataman [command] "
+                echo
+                echo "mesos_dataman:[start|stop|status|restart|install|addtop|addweb]"
+                echo
+                echo "./mesos_dataman start"
+                exit 1
+                ;;
+
+        *)
+        echo ERROR command
+        echo Pleas Enter mesos_dataman --help or mesos_dataman -h
+        exit 1
+        ;;
+esac

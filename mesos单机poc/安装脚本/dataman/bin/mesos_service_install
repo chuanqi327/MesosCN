@@ -1,0 +1,244 @@
+#!/bin/bash
+#Filename:
+#****************************************************
+# Author: zpang - zpang@dataman-inc.com
+# Last modified: 2015-05-17 15:24
+# Description: single mesos system install
+#****************************************************
+datetime=`date +%Y%m%d-%H:%M:%S`
+dir=$(dirname `readlink -f "$0"`) && cd $dir
+
+ErrorProcess()
+{
+    if [ "$?" -ne 0 ];then
+        echo "$1 Install fail" && exit 1
+    fi
+
+}
+
+InstallLog()
+{
+    logfile="../logs/mesos_install.log"
+    if [ ! -f $logfile ];then
+	echo "$datetime mesos system install start" >> $logfile 
+	echo "====================================" >> $logfile 
+    fi
+    echo "$datetime  $1 is ok!" >> $logfile
+}
+
+RootTest()
+{
+    ROOT_UID=0
+    UID=$(id -u)
+    if [ "$UID" -ne "$ROOT_UID" ];then
+        printf "permission denied..Please use root! \n" &&  exit 1
+    fi
+}
+
+PingCmd()
+{
+        #调用ping函数，-w为超时时间；-c为ping的次数;
+        ping -w 1 -c 1 "$1">/dev/null
+        if [ "$?" -ne 0 ];then
+                printf "Please check your network settings and try again! \n" &&  exit 1
+        fi
+}
+
+InstallMod()
+{
+    for i in $(seq 3);do
+	$1
+	if [ "$?" -eq 0 ];then
+		InstallLog "$1" && break
+        fi
+    done
+    ErrorProcess "$1"
+}
+
+CheckService()
+{
+    if [ "$2" = "bamboo" ];then
+	if [ ! -f /opt/bamboo/bamboo ];then
+		InstallMod $1
+	else
+		echo "$2 ALREADY EXISTS!!!"
+	fi
+    fi
+
+    if [ "$2" = "zookeeper" ];then
+	if [ ! -f /etc/zookeeper/conf/zoo.cfg ];then
+		InstallMod $1
+	else
+		echo "$2 ALREADY EXISTS!!!"
+	fi
+    fi
+
+    if [ "$2" = "rsyslog" ];then
+	if [ ! -f /etc/rsyslog.d/dataman.haproxy.conf ];then
+		InstallMod $1
+	else
+		echo "$2 ALREADY EXISTS!!!"
+	fi
+    fi
+    if [ "$2" != "bamboo" ] && [ "$2" != "zookeeper" ] && [ "$2" != "rsyslog" ];then
+    	SERVICE_EXE=`which $2`
+    	if [ -z "$SERVICE_EXE" ];then
+		InstallMod $1
+	else
+		echo "$2 ALREADY EXISTS!!!"
+    	fi
+    fi
+}
+
+Base()
+{
+    sudo apt-get update  && sudo apt-get install -y software-properties-common git curl wget tar gzip
+}
+
+#Docker Install
+Docker()
+{
+    # Check that HTTPS transport is available to APT
+    if [ ! -e /usr/lib/apt/methods/https ]; then
+        sudo apt-get update && sudo apt-get install -y apt-transport-https
+    else
+        echo "$datetime HTTPS transport is available"
+    fi
+    # Add the repository to your APT sources
+    echo deb https://get.docker.com/ubuntu docker main > /etc/apt/sources.list.d/docker.list
+    # Then import the repository key
+    apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 36A1D7869245C8950F966E92D8576A8BA88D21E9
+    # Install docker
+    sudo apt-get update && sudo apt-get install -y lxc-docker
+}
+
+DatamanMesos()
+{
+    sudo wget -O - http://get.dataman.io/repos/ubuntu/key | sudo apt-key add -
+    sudo echo "deb http://get.dataman.io/repos/ubuntu ./" > /etc/apt/sources.list.d/dataman.list
+    # Install dataman mesos - marathon
+    sudo apt-get update && sudo apt-get -y install mesos
+}
+
+DatamanMarathon()
+{
+    sudo wget -O - http://get.dataman.io/repos/ubuntu/key | sudo apt-key add -
+    sudo echo "deb http://get.dataman.io/repos/ubuntu ./" > /etc/apt/sources.list.d/dataman.list
+    # Install dataman mesos - marathon
+    sudo apt-get update && sudo apt-get -y install marathon
+}
+
+Zookeeper()
+{
+    # Key
+    sudo apt-key adv --keyserver keyserver.ubuntu.com --recv E56151BF
+    DISTRO=$(lsb_release -is | tr '[:upper:]' '[:lower:]')
+    CODENAME=$(lsb_release -cs)
+    # Add the repository
+    echo "deb http://repos.mesosphere.io/${DISTRO} ${CODENAME} main" |
+    sudo tee /etc/apt/sources.list.d/mesosphere.list
+    # Install packages
+    sudo apt-get update && apt-get -y install zookeeper zookeeper-bin zookeeperd
+}
+
+HaproxyLog()
+{
+    #RSyslog haproxy logs setting
+    sudo /bin/cat > /etc/rsyslog.d/dataman.haproxy.conf<<EOF
+
+#Receive Haproxy Log Prot
+$ModLoad imudp
+$UDPServerRun 514
+#add line
+$UDPServerAddress 127.0.0.1
+EOF
+    sudo /usr/sbin/service rsyslog restart
+}
+
+Haproxy()
+{
+    sudo apt-add-repository -y ppa:vbernat/haproxy-1.5 && sudo apt-get update && sudo apt-get install -y haproxy
+}
+
+Bamboo()
+{
+
+    #Dataman-Bamboo Install
+    VERSION=0.9.0
+    P_NAME=dataman-bamboo-$VERSION.tar.gz
+    BAMBOO_INSTALL_HOME=/opt/bamboo
+    BAMBOO_HOME=/usr/local/bamboo
+    #net
+    if [ -d "$BAMBOO_HOME" ];then
+	/bin/rm -Rf $BAMBOO_HOME
+    fi
+    if [ -f "$P_NAME" ];then
+	/bin/rm -Rf $P_NAME
+    fi
+    sudo /usr/bin/wget https://github.com/Dataman-Cloud/bamboo/releases/download/dr-$VERSION/$P_NAME && sudo /bin/mkdir $BAMBOO_INSTALL_HOME && sudo /bin/tar xzvf $P_NAME -C $BAMBOO_INSTALL_HOME --strip-components=1 && sudo /bin/rm -f $P_NAME* && sudo /bin/chmod -R 775 $BAMBOO_INSTALL_HOME &&  sudo /bin/ln -s $BAMBOO_INSTALL_HOME $BAMBOO_HOME
+}
+
+Install()
+{
+    case $1 in
+	Base)
+		InstallMod $1 
+	;;
+	
+	Docker)
+		CheckService $1 docker 
+	;;
+
+	DatamanMesos)
+		CheckService $1 mesos
+	;;
+
+	DatamanMarathon)
+		CheckService $1 marathon
+	;;
+
+	Zookeeper)
+		CheckService $1 zookeeper
+	;;
+
+	HaproxyLog)
+		CheckService $1 rsyslog
+	;;
+
+	Haproxy)
+		CheckService $1 haproxy
+	;;
+
+	Bamboo)
+        	CheckService $1 bamboo
+	;;
+
+	All)
+		InstallMod Base && CheckService Docker docker && CheckService DatamanMesos mesos && CheckService DatamanMarathon marathon && CheckService Zookeeper zookeeper && CheckService HaproxyLog rsyslog && CheckService Haproxy haproxy && CheckService Bamboo bamboo	
+	;;
+
+	--help|-h)
+    		echo "dataman mesos system service install script"
+        	echo "Usage: mesos_service_install [service_name] "
+    		echo
+        	echo "service_name:[Base|Docker|DatamanMesos|DatamanMarathon|Zookeeper|HaproxyLog|Haproxy|Bamboo|All]"
+    		echo
+    		echo "./mesos_service_install Docker"
+        	exit 1
+        	;;
+
+        *)
+    	echo ERROR command
+    	echo Pleas Enter mesos_service_install --help or mesos_service_install -h
+    	exit 1
+        ;;
+	
+    esac
+}
+
+main()
+{
+	RootTest && PingCmd buntu.mirrors.yg.ucloud.cn && Install $1
+}
+
+main $1
