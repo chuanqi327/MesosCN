@@ -2,6 +2,8 @@
     * Mesos是什么
        * [Apache Mesos](Apache Mesos介绍.md)
        * [为什么要用mesos](why_use_mesos.md)
+    * Mesos基本框架
+       * [Mesos基本框架](Mesos_basic.md)
     * Mesos技术细节
        * [Mesos相关设置](document/Configuration.md)
        * [Mesos与容器](document/Mesos-Containerizer.md)
