@@ -1,25 +1,22 @@
 * **Mesos 官方文档**
     * Mesos是什么
-       * [Mesos是什么] (Apache Mesos介绍.md)
+       * [Apache Mesos](Apache Mesos介绍.md)
        * [为什么要用mesos](为什么要用mesos.md)
-    * 运行Mesos
-       * [configuration](document/runing-Mesos/Configuration.md)
-       * [Mesos Containerizer](document/runing-Mesos/Mesos-Containerizer.md)
-       * [Docker Containerizer](document/runing-Mesos/Docker-Containerizer.md)
-       * [External Containerizer](document/runing-Mesos/External-Containerizer.md)
-       * [Framework Authorization](document/runing-Mesos/Framework-Authorization.md)
-       * [Framework Rate Limiting](document/runing-Mesos/Framework-Rate-Limiting.md)
+    * Mesos技术细节
+       * [Mesos相关设置](document/runing-Mesos/Configuration.md)
+       * [Mesos与容器](document/runing-Mesos/Mesos-Containerizer.md)
+       * [Docker容器如何在Mesos如何使用](document/runing-Mesos/Docker-Containerizer.md)
+       * [其他容器](document/runing-Mesos/External-Containerizer.md)
+       * [Framework的认证](document/runing-Mesos/Framework-Authorization.md)
+       * [Framework的速率限制](document/runing-Mesos/Framework-Rate-Limiting.md)
        * [日志与调试](document/runing-Mesos/Mesos-of-Debug-and-Log.md)
-       * [High Availability](document/runing-Mesos/Mesos-High-Availability-Mode.md)
-       * Operational Guide
-       * [Monitoring](document/runing-Mesos/Mesos-Observability-Metrics.md)
-       * Network Monitoring
-       * [Slave Recovery](document/runing-Mesos/Slave-Recovery.md)
-       * [Tools](document/runing-Mesos/Tools.md)
+       * [Mesos的高可用](document/runing-Mesos/Mesos-High-Availability-Mode.md)
+       * [Mesos的监控机制](document/runing-Mesos/Mesos-Observability-Metrics.md)
+       * [Slave的恢复](document/runing-Mesos/Slave-Recovery.md)
+       * [工具](document/runing-Mesos/Tools.md)
     * 运行 Mesos 框架
        * [建立在 Mesos 上的软件项目](document/Running-mesos-Frameworks/Software-projects-built-on-Mesos.md)
     * 使用Meso框架开发(TBD)
-    * Mesos Modeules
        * [Mesos Modules](document/Mesos-Modeules/Mesos-Modules.md)
     * Mesos贡献
     * 关于Mesos更多信息
