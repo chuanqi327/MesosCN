@@ -1,7 +1,7 @@
 * Apache Mesos
     * Mesos是什么
        * [Apache Mesos](Apache Mesos介绍.md)
-       * [为什么要用mesos](为什么要用mesos.md)
+       * [为什么要用mesos](why_use_mesos.md)
     * Mesos技术细节
        * [Mesos相关设置](document/Configuration.md)
        * [Mesos与容器](document/Mesos-Containerizer.md)
@@ -19,9 +19,9 @@
 	 * [阿里云部署](mesos单机poc/单机安装mesos系统.md)
 	 * [Ucloud部署](mesos单机poc/单机安装mesos系统.md)
     * 运行 Mesos 框架
-       * [建立在 Mesos 上的软件项目](document/Running-mesos-Frameworks/Software-projects-built-on-Mesos.md)
+       * [建立在 Mesos 上的软件项目](document/Software-projects-built-on-Mesos.md)
     * 使用Meso框架开发(TBD)
-       * [Mesos Modules](document/Mesos-Modeules/Mesos-Modules.md)
+       * [Mesos Modules](document/Mesos-Modules.md)
     * Mesos案例
     * [Autodesk如何使用Mesos来实现自己的PaaS云平台](Excellent-article/putting-mesos-through-its_paces.md)
     * 关于Mesos更多信息
