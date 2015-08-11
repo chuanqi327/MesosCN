@@ -14,27 +14,24 @@
        * [Mesos的监控机制](document/runing-Mesos/Mesos-Observability-Metrics.md)
        * [Slave的恢复](document/runing-Mesos/Slave-Recovery.md)
        * [工具](document/runing-Mesos/Tools.md)
+    * Mesos部署
+	 * [Mesos单机部署](mesos单机poc/单机安装mesos系统.md)
+	 * [阿里云部署](mesos单机poc/单机安装mesos系统.md)
+	 * [Ucloud部署](mesos单机poc/单机安装mesos系统.md)
     * 运行 Mesos 框架
        * [建立在 Mesos 上的软件项目](document/Running-mesos-Frameworks/Software-projects-built-on-Mesos.md)
     * 使用Meso框架开发(TBD)
        * [Mesos Modules](document/Mesos-Modeules/Mesos-Modules.md)
-    * Mesos贡献
+    * Mesos案例
+    * [Autodesk如何使用Mesos来实现自己的PaaS云平台](Excellent-article/putting-mesos-through-its_paces.md)
     * 关于Mesos更多信息
 	    * [Mesosphere-of-Mesos-DNS](OverView/Mesosphere-of-Mesos-DNS.md)
 	    * [Mesos-dns](OverView/mesos-dns.md)
 	    * [Mesos-DNS on Google Compute Platform](OverView/Mesos-DNS-on-Google-Compute-Platform.md)
 	    * [spark-on-mesos](OverView/spark-on-mesos.md)
-
-* **Marathon 官方用户文档中文版**
+* **Marathon产品介绍**
     * [设置与运行Marathon](document/Marathon/Marathon.md)
     * [在虚拟机中开发Marathon](document/Marathon/developing-vm.md)
     * [SSL模式与普通模式接入认证](document/Marathon/SSL and Basic Access Authentication.md)
     * [服务发现与负载均衡](document/Marathon/Service-Discovery.md)
-* **Bmaboo 官方用户文档中文版**
-    * Bmaboo 文档
-* **最佳实践**
-* **Mesos 优秀文章**
-    * [Mesos简介](OverView/Introduction-of-Mesos.md)
-    * [Autodesk如何使用Mesos来实现自己的PaaS云平台](Excellent-article/putting-mesos-through-its_paces.md)
-* **Mesos 最新版本发布**
-    * [Mesos 0.23版本发布](Release/mesos-023-released.md)
+
