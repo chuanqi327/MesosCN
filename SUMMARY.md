@@ -25,8 +25,8 @@
     * 使用Meso框架开发(TBD)
        * [Mesos Modules](document/Mesos-Modules.md)
     * Mesos案例
-    * [Autodesk如何使用Mesos来实现自己的PaaS云平台](mesos_example/putting-mesos-through-its_paces.md)
-    * [基于Mesos搭建Spark数据平台](mesos_example/spark环境搭建文档.md)
+        * [Autodesk如何使用Mesos来实现自己的PaaS云平台](mesos_example/putting-mesos-through-its_paces.md)
+    	* [基于Mesos搭建Spark数据平台](mesos_example/spark环境搭建文档.md)
     * 关于Mesos更多信息
 	    * [Mesosphere-of-Mesos-DNS](OverView/Mesosphere-of-Mesos-DNS.md)
 	    * [Mesos-dns](OverView/mesos-dns.md)
