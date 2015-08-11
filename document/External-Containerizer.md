@@ -1,12 +1,12 @@
-# 外部 containerizer 
+# 外部容器说明
 
-#外部 Containerizer
+#外部容器
 
  - EC = 外部 containerizer 。 mesos slave 的一部分其提供 API ，通过可执行的外部插件来支持 containerizing ( 集装箱化 )。 
  - ECP = 外部 containerizer 程序。 一个通过 containering
    system 接口实现了真正的集装箱化的可执行外部插件 。 ( 例如 Docker ) 
 
-#Containerizing
+#容器化
 
 总体概述
 

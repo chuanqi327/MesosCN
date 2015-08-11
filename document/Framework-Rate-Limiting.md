@@ -1,8 +1,8 @@
-#Framework-Rate-Limiting
+#Framework速率限制
 
 Framework rate limiting 是 Mesos 0.20.0 引入的新的特色。
 
-####什么是 Framework Rate Limiting
+####什么是Framework速率限制
 
 在多框架环境中，这个功能的主要目的是通过 master 限制其他框架的消息 ( 如 development, batch ) ， 来保护 high-SLA 框架 ( 如 production, service )的吞吐量。
 

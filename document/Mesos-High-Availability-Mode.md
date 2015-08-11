@@ -23,9 +23,9 @@
 
 
 Mesos 实现两层的 ZooKeeper leader 选举抽象，代码实现一个在 src/zookeeper 目录下，另一个在 src/master 之下(请查看 contender|detector.hpp|cpp).   
-    低层次的 LeaderContender 和 LeaderDetctor 在这个方法之后 实现一个通用的 ZooKeeper 选举算法并提供了松散的模块化(基于 master 集群的大小而没有从众效应， 通常为 3)    
-    高等级的 MasterContender 和 MasterDetector 围绕着 ZooKeeper 的竞争者和检测器抽象为适配器来提供/解析 ZooKeeper 的数据。  
-    每个 Mesos master 同时使用一个竞争者和一个检测器来尝试选举他们自身并检测谁是当前的 leader。一个分离的检测器是必须的因为每个 master 的 WebUI 重定向浏览器流向到当前的 leader 当该 master   未被选举的时候。其他的 Mesos 模块（例如 slaves 和 scheduler 驱动）使用该检测器来发现当前的 leader 并于其实现连接。  
+低层次的 LeaderContender 和 LeaderDetctor 在这个方法之后 实现一个通用的 ZooKeeper 选举算法并提供了松散的模块化(基于 master 集群的大小而没有从众效应， 通常为 3)    
+高等级的 MasterContender 和 MasterDetector 围绕着 ZooKeeper 的竞争者和检测器抽象为适配器来提供/解析 ZooKeeper 的数据。  
+每个 Mesos master 同时使用一个竞争者和一个检测器来尝试选举他们自身并检测谁是当前的 leader。一个分离的检测器是必须的因为每个 master 的 WebUI 重定向浏览器流向到当前的 leader 当该 master   未被选举的时候。其他的 Mesos 模块（例如 slaves 和 scheduler 驱动）使用该检测器来发现当前的 leader 并于其实现连接。  
 
 leader 候选人群体的概念在 Group 中被实现。该抽象确保了可靠的 ZooKeeper 集群成员注册，取消和监控(通过队列和幕后的可充实错误的重新尝试) 。其监控多个 ZooKeeper 会话事件：  
         连接  
@@ -53,6 +53,3 @@ leader 候选人群体的概念在 Group 中被实现。该抽象确保了可靠
 
 * leader 对 slave 的健康检查失败。
 
-* leader 标记 slave 为停用的状态，并将运行在这个 slave 上的任务标记为 LOST 状态。
-
->本篇翻译自[http://mesos.apache.org/documentation/latest/high-availability/](http://mesos.apache.org/documentation/latest/high-availability/)

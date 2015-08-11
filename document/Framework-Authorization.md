@@ -1,4 +1,4 @@
-###Authorization
+###Framework授权
 
 Mesos 在 0.20.0 版本增加了给 framewrok 的授权支持。
 

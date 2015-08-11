@@ -32,5 +32,4 @@
 
 - [Xcode Workspace](https://github.com/tillt/xcode-mesos) 让 Xcode Workspace 支持 Mesos。
 
-Can’t find yours in the list? Please submit a patch, or email user@mesos.apache.org and we’ll add you!
 

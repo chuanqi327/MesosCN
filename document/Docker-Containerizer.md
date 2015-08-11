@@ -1,4 +1,4 @@
-## Docker Containerizer（用 Docker 容器部署应用）
+## 使用Docker 容器部署应用
 
 Mesos 0.20.0 开始支持通过 Docker 镜像来启动任务，同时也支持部分的 Docker 参数。当然我们计划在未来支持更多的参数。
 

@@ -1,4 +1,3 @@
-# Mesos Observability Metrics
 # Mesos 可读性指标
 
 本文档描述了 Mesos master 和 slave 节点的可读性指标。这篇文章也简述了如何监控这些指标，以便更快地发现集群的异常状况。

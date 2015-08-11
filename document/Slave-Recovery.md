@@ -8,7 +8,6 @@ Slave 恢复是 Mesos 的一个特色功能：
 这个功能是 0.14.0 版引入的。当需要升级或者意外崩溃时，Mesos slave 能被重新启动。
 
 
-#How does it work?
 #工作原理
 
 Slave 可以定期将检查点（check point）记录到本地硬盘，检查点的内容包括正在运行的 tasks 和  executors（包括 Task 信息，Executor  信息， 更新状态等）。一旦在 slave 和框架上激活了检查点特性，在他们重启的时候会自动读取既有的检查点信息，重新连接上还在运行的 executor。当然如果之前宿主机整个系统被重启过，那所有 executors/task 都不存在了。
@@ -51,8 +50,6 @@ Slave 可以定期将检查点（check point）记录到本地硬盘，检查点
 
    - 如果 slave 重启后用于恢复的时间超过了 `recovery_timeout` 限制, 所有正在等待连接 slave 的 executor 将自行销毁。
       - 注意：这个标记仅适用于已经设置了 `--checkpoint` 时。
-
-NOTE: If none of the frameworks have enabled checkpointing, executors/tasks of frameworks die when the slave dies and are not recovered.
 
 注意：如果所有的框架都没有设置检查点，当 slave 挂掉并且重启无法恢复时，框架的 executor/task 也会挂掉。
 

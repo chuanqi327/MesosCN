@@ -1,9 +1,9 @@
-## Mesos Containerizer
+##Mesos容器
 Mesos Containerizer 提供轻量级的容器化和资源隔离功能，主要使用了 Linux 内建的 cgroup 和 namespace 等机制 。这些机制可以组合使用，来满足不同的的隔离需求。
 
 Mesos Containerizer 还提供了对 POSIX 系统的基本支持（ 如 OS X ），但不支持资源隔离功能，只是提供资源的使用情况报告。
 
-### Shared Filesystem （ 共享文件系统 ）
+### Shared Filesystem--共享文件系统
 共享文件系统隔离器（Shared Filesystem isolator）可以被选装在 Linux 宿主机上，这样 container 和宿主机之间可以共享文件系统。 
 
 有关共享文件系统的配置信息位于 ExecutorInfo 中的 ContainerInfo 段落，无论是通过 framework 或者启动 slave 的时候使用 ***–default_container_info*** 标志位。
@@ -12,15 +12,13 @@ ContainerInfo 中的 Volumes 段落定义了将宿主机部分共享文件路径
 
 引入共享文件系统隔离器（Shared Filesystem isolator）的目的，是让每个容器能都拥有专有的目录空间。容器私有的 "/temp" 目录可以这么来设置参数 —— host\_path = "tmp" 和 container\_path = "/temp "。结果在宿主机 excutor 的工作目录下创建一个 "tmp" 目录(1777 权限)，同时在容器内映射到根目录下 "/tmp" 之下。容器内的进程将看不见宿主机的根目录 /tmp 或者其他容器内的 /tmp 。
 
-###Pid Namespace
+###Pid Namespace--Pid 空间
 
 Pid 命名空间隔离器（Pid Namespace isolator ）将每个容器分割在单独的命名空间。它有两个主要的优点：
 
 1. 可见性：在容器中运行的进程 ( executor 和 descendants ) ，无法看到或者向命名空间之外的进程发信号。
 
 2. Clean termination：当在命名空间内终止一个 leading process，内核同时也会终止该命名空间内其他的进程 。
-
-The Launcher will use (2) during destruction of a container in preference to the freezer cgroup, avoiding known kernel issues related to freezing cgroups under OOM conditions.
 
 目录 /proc 将被挂载到容器之中，所以 "ps" 之类的工具仍可以使用。
 
